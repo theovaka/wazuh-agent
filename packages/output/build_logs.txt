@@ -1,0 +1,1621 @@
+Sending build context to Docker daemon  13.82kB
+Step 1/14 : FROM debian:7
+ ---> 10fcec6d95c4
+Step 2/14 : ENV DEBIAN_FRONTEND noninteractive
+ ---> Using cache
+ ---> ed41d58a7fa3
+Step 3/14 : RUN echo "deb [trusted=yes] http://archive.debian.org/debian/ wheezy contrib main non-free" > /etc/apt/sources.list &&     echo "deb-src http://archive.debian.org/debian/ wheezy contrib main non-free" >> /etc/apt/sources.list &&     apt-get update && apt-get install -y --force-yes apt-utils &&     apt-get install -y --force-yes     curl gcc make sudo wget expect gnupg perl-base=5.14.2-21+deb7u3 perl     libc-bin=2.13-38+deb7u10 libc6=2.13-38+deb7u10 libc6-dev build-essential     cdbs devscripts equivs automake autoconf libtool libaudit-dev selinux-basics     libdb5.1=5.1.29-5 libdb5.1-dev libssl1.0.0=1.0.1e-2+deb7u20 procps gawk libsigsegv2
+ ---> Using cache
+ ---> 79278d137a5c
+Step 4/14 : RUN apt-get update && apt-get build-dep python3.2 -y --force-yes
+ ---> Using cache
+ ---> 135ecafd6e46
+Step 5/14 : RUN curl -OL http://packages.wazuh.com/utils/gcc/gcc-9.4.0.tar.gz &&     tar xzf gcc-9.4.0.tar.gz  && cd gcc-9.4.0/ &&     ./contrib/download_prerequisites &&     ./configure --prefix=/usr/local/gcc-9.4.0 --enable-languages=c,c++ --disable-multilib         --disable-libsanitizer &&     make -j$(nproc) && make install &&     ln -fs /usr/local/gcc-9.4.0/bin/g++ /usr/bin/c++ &&     ln -fs /usr/local/gcc-9.4.0/bin/gcc /usr/bin/cc && cd / && rm -rf gcc-*
+ ---> Using cache
+ ---> b749303d6b04
+Step 6/14 : ENV CPLUS_INCLUDE_PATH "/usr/local/gcc-9.4.0/include/c++/9.4.0/"
+ ---> Using cache
+ ---> 7eb4e59cf1f5
+Step 7/14 : ENV LD_LIBRARY_PATH "/usr/local/gcc-9.4.0/lib64:${LD_LIBRARY_PATH}"
+ ---> Using cache
+ ---> 56b4c72ca2df
+Step 8/14 : ENV PATH "/usr/local/gcc-9.4.0/bin:${PATH}"
+ ---> Using cache
+ ---> 8220b0288fb9
+Step 9/14 : RUN curl -OL http://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz &&     tar -zxf cmake-3.18.3.tar.gz && cd cmake-3.18.3 &&     ./bootstrap --no-system-curl CXX=/usr/local/gcc-9.4.0/bin/g++         CC=/usr/local/gcc-9.4.0/bin/gcc &&     make -j$(nproc) && make install && ln -s /usr/local/bin/cmake /usr/bin/cmake &&     cd / && rm -rf cmake-*
+ ---> Using cache
+ ---> 02b291897d00
+Step 10/14 : ADD build.sh /usr/local/bin/build_package
+ ---> Using cache
+ ---> d05c598849a1
+Step 11/14 : RUN chmod +x /usr/local/bin/build_package
+ ---> Using cache
+ ---> 5758b4522af5
+Step 12/14 : ADD helper_function.sh /usr/local/bin/helper_function.sh
+ ---> Using cache
+ ---> c64f5069db39
+Step 13/14 : ADD gen_permissions.sh /tmp/gen_permissions.sh
+ ---> Using cache
+ ---> 4739f0af76fe
+Step 14/14 : ENTRYPOINT ["/usr/local/bin/build_package"]
+ ---> Using cache
+ ---> 2ec46fc1ed32
+Successfully built 2ec46fc1ed32
+Successfully tagged pkg_deb_agent_builder_amd64:latest
+dh_testdir
+dh_testroot
+dh_prep
+dh_testdir
+dh_testroot
+dh_install
+dh_installdocs
+dh_installchangelogs
+dh_compress
+dh_fixperms
+dh_installdeb
+dh_gencontrol
+dh_md5sums
+dh_builddeb
+dpkg-deb: building package `wazuh-agent-build-deps' in `../wazuh-agent-build-deps_1.0_all.deb'.
+
+The package has been created.
+Attention, the package has been created in the current directory,
+not in ".." as indicated by the message above!
+Selecting previously unselected package wazuh-agent-build-deps.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 29287 files and directories currently installed.)
+Unpacking wazuh-agent-build-deps (from wazuh-agent-build-deps_1.0_all.deb) ...
+Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 1%Reading package lists... 39%Reading package lists... 73%Reading package lists... 97%Reading package lists... 97%Reading package lists... 98%Reading package lists... 98%Reading package lists... Done
+Building dependency tree... 0%Building dependency tree... 0%Building dependency tree... 50%Building dependency tree... 50%Building dependency tree... 62%Building dependency tree       
+Reading state information... 0%Reading state information... 0%Reading state information... Done
+Starting
+Starting 2
+Done
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+1 not fully installed or removed.
+After this operation, 0 B of additional disk space will be used.
+Setting up wazuh-agent-build-deps (1.0) ...
+ dpkg-buildpackage -rsudo -D -us -uc -b -nc
+dpkg-buildpackage: warning: using a gain-root-command while being root
+dpkg-buildpackage: source package wazuh-agent
+dpkg-buildpackage: source version 4.9.0-0
+dpkg-buildpackage: source changed by Wazuh, Inc <info@wazuh.com>
+ dpkg-source --before-build wazuh-agent-4.9.0
+dpkg-buildpackage: host architecture amd64
+ debian/rules build
+dh build
+   dh_testdir
+   dh_auto_test
+ sudo debian/rules binary
+dh binary
+   dh_testroot
+   dh_prep
+	rm -f debian/wazuh-agent.substvars
+	rm -f debian/wazuh-agent.*.debhelper
+	rm -rf debian/wazuh-agent/
+   dh_installdirs
+	install -d debian/wazuh-agent
+   debian/rules override_dh_install
+make[1]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0'
+rm -rf /var/ossec/
+# Build the binaries
+make -C src deps TARGET=agent
+make[2]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+curl -so external/cJSON.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/cJSON.tar.gz || true
+cd external && test -e cJSON.tar.gz && gunzip cJSON.tar.gz || true
+cd external && test -e cJSON.tar && tar -xf cJSON.tar || true
+test -e external/cJSON.tar && rm external/cJSON.tar || true
+test -d external/cJSON ||\
+	(curl -so external/cJSON.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/cJSON.tar.gz &&\
+	cd external && gunzip cJSON.tar.gz && tar -xf cJSON.tar && rm cJSON.tar)
+curl -so external/curl.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/curl.tar.gz || true
+cd external && test -e curl.tar.gz && gunzip curl.tar.gz || true
+cd external && test -e curl.tar && tar -xf curl.tar || true
+test -e external/curl.tar && rm external/curl.tar || true
+test -d external/curl ||\
+	(curl -so external/curl.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/curl.tar.gz &&\
+	cd external && gunzip curl.tar.gz && tar -xf curl.tar && rm curl.tar)
+curl -so external/libdb.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libdb.tar.gz || true
+cd external && test -e libdb.tar.gz && gunzip libdb.tar.gz || true
+cd external && test -e libdb.tar && tar -xf libdb.tar || true
+test -e external/libdb.tar && rm external/libdb.tar || true
+test -d external/libdb ||\
+	(curl -so external/libdb.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libdb.tar.gz &&\
+	cd external && gunzip libdb.tar.gz && tar -xf libdb.tar && rm libdb.tar)
+curl -so external/libffi.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libffi.tar.gz || true
+cd external && test -e libffi.tar.gz && gunzip libffi.tar.gz || true
+cd external && test -e libffi.tar && tar -xf libffi.tar || true
+test -e external/libffi.tar && rm external/libffi.tar || true
+test -d external/libffi ||\
+	(curl -so external/libffi.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libffi.tar.gz &&\
+	cd external && gunzip libffi.tar.gz && tar -xf libffi.tar && rm libffi.tar)
+curl -so external/libyaml.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libyaml.tar.gz || true
+cd external && test -e libyaml.tar.gz && gunzip libyaml.tar.gz || true
+cd external && test -e libyaml.tar && tar -xf libyaml.tar || true
+test -e external/libyaml.tar && rm external/libyaml.tar || true
+test -d external/libyaml ||\
+	(curl -so external/libyaml.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libyaml.tar.gz &&\
+	cd external && gunzip libyaml.tar.gz && tar -xf libyaml.tar && rm libyaml.tar)
+curl -so external/openssl.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/openssl.tar.gz || true
+cd external && test -e openssl.tar.gz && gunzip openssl.tar.gz || true
+cd external && test -e openssl.tar && tar -xf openssl.tar || true
+test -e external/openssl.tar && rm external/openssl.tar || true
+test -d external/openssl ||\
+	(curl -so external/openssl.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/openssl.tar.gz &&\
+	cd external && gunzip openssl.tar.gz && tar -xf openssl.tar && rm openssl.tar)
+curl -so external/procps.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/procps.tar.gz || true
+cd external && test -e procps.tar.gz && gunzip procps.tar.gz || true
+cd external && test -e procps.tar && tar -xf procps.tar || true
+test -e external/procps.tar && rm external/procps.tar || true
+test -d external/procps ||\
+	(curl -so external/procps.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/procps.tar.gz &&\
+	cd external && gunzip procps.tar.gz && tar -xf procps.tar && rm procps.tar)
+curl -so external/sqlite.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/sqlite.tar.gz || true
+cd external && test -e sqlite.tar.gz && gunzip sqlite.tar.gz || true
+cd external && test -e sqlite.tar && tar -xf sqlite.tar || true
+test -e external/sqlite.tar && rm external/sqlite.tar || true
+test -d external/sqlite ||\
+	(curl -so external/sqlite.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/sqlite.tar.gz &&\
+	cd external && gunzip sqlite.tar.gz && tar -xf sqlite.tar && rm sqlite.tar)
+curl -so external/zlib.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/zlib.tar.gz || true
+cd external && test -e zlib.tar.gz && gunzip zlib.tar.gz || true
+cd external && test -e zlib.tar && tar -xf zlib.tar || true
+test -e external/zlib.tar && rm external/zlib.tar || true
+test -d external/zlib ||\
+	(curl -so external/zlib.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/zlib.tar.gz &&\
+	cd external && gunzip zlib.tar.gz && tar -xf zlib.tar && rm zlib.tar)
+curl -so external/audit-userspace.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/audit-userspace.tar.gz || true
+cd external && test -e audit-userspace.tar.gz && gunzip audit-userspace.tar.gz || true
+cd external && test -e audit-userspace.tar && tar -xf audit-userspace.tar || true
+test -e external/audit-userspace.tar && rm external/audit-userspace.tar || true
+test -d external/audit-userspace ||\
+	(curl -so external/audit-userspace.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/audit-userspace.tar.gz &&\
+	cd external && gunzip audit-userspace.tar.gz && tar -xf audit-userspace.tar && rm audit-userspace.tar)
+curl -so external/msgpack.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/msgpack.tar.gz || true
+cd external && test -e msgpack.tar.gz && gunzip msgpack.tar.gz || true
+cd external && test -e msgpack.tar && tar -xf msgpack.tar || true
+test -e external/msgpack.tar && rm external/msgpack.tar || true
+test -d external/msgpack ||\
+	(curl -so external/msgpack.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/msgpack.tar.gz &&\
+	cd external && gunzip msgpack.tar.gz && tar -xf msgpack.tar && rm msgpack.tar)
+curl -so external/bzip2.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/bzip2.tar.gz || true
+cd external && test -e bzip2.tar.gz && gunzip bzip2.tar.gz || true
+cd external && test -e bzip2.tar && tar -xf bzip2.tar || true
+test -e external/bzip2.tar && rm external/bzip2.tar || true
+test -d external/bzip2 ||\
+	(curl -so external/bzip2.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/bzip2.tar.gz &&\
+	cd external && gunzip bzip2.tar.gz && tar -xf bzip2.tar && rm bzip2.tar)
+curl -so external/nlohmann.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/nlohmann.tar.gz || true
+cd external && test -e nlohmann.tar.gz && gunzip nlohmann.tar.gz || true
+cd external && test -e nlohmann.tar && tar -xf nlohmann.tar || true
+test -e external/nlohmann.tar && rm external/nlohmann.tar || true
+test -d external/nlohmann ||\
+	(curl -so external/nlohmann.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/nlohmann.tar.gz &&\
+	cd external && gunzip nlohmann.tar.gz && tar -xf nlohmann.tar && rm nlohmann.tar)
+curl -so external/googletest.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/googletest.tar.gz || true
+cd external && test -e googletest.tar.gz && gunzip googletest.tar.gz || true
+cd external && test -e googletest.tar && tar -xf googletest.tar || true
+test -e external/googletest.tar && rm external/googletest.tar || true
+test -d external/googletest ||\
+	(curl -so external/googletest.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/googletest.tar.gz &&\
+	cd external && gunzip googletest.tar.gz && tar -xf googletest.tar && rm googletest.tar)
+curl -so external/libpcre2.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libpcre2.tar.gz || true
+cd external && test -e libpcre2.tar.gz && gunzip libpcre2.tar.gz || true
+cd external && test -e libpcre2.tar && tar -xf libpcre2.tar || true
+test -e external/libpcre2.tar && rm external/libpcre2.tar || true
+test -d external/libpcre2 ||\
+	(curl -so external/libpcre2.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libpcre2.tar.gz &&\
+	cd external && gunzip libpcre2.tar.gz && tar -xf libpcre2.tar && rm libpcre2.tar)
+curl -so external/libplist.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libplist.tar.gz || true
+cd external && test -e libplist.tar.gz && gunzip libplist.tar.gz || true
+cd external && test -e libplist.tar && tar -xf libplist.tar || true
+test -e external/libplist.tar && rm external/libplist.tar || true
+test -d external/libplist ||\
+	(curl -so external/libplist.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libplist.tar.gz &&\
+	cd external && gunzip libplist.tar.gz && tar -xf libplist.tar && rm libplist.tar)
+curl -so external/pacman.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/pacman.tar.gz || true
+cd external && test -e pacman.tar.gz && gunzip pacman.tar.gz || true
+cd external && test -e pacman.tar && tar -xf pacman.tar || true
+test -e external/pacman.tar && rm external/pacman.tar || true
+test -d external/pacman ||\
+	(curl -so external/pacman.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/pacman.tar.gz &&\
+	cd external && gunzip pacman.tar.gz && tar -xf pacman.tar && rm pacman.tar)
+curl -so external/libarchive.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/libarchive.tar.gz || true
+cd external && test -e libarchive.tar.gz && gunzip libarchive.tar.gz || true
+cd external && test -e libarchive.tar && tar -xf libarchive.tar || true
+test -e external/libarchive.tar && rm external/libarchive.tar || true
+test -d external/libarchive ||\
+	(curl -so external/libarchive.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/libarchive.tar.gz &&\
+	cd external && gunzip libarchive.tar.gz && tar -xf libarchive.tar && rm libarchive.tar)
+curl -so external/popt.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/popt.tar.gz || true
+cd external && test -e popt.tar.gz && gunzip popt.tar.gz || true
+cd external && test -e popt.tar && tar -xf popt.tar || true
+test -e external/popt.tar && rm external/popt.tar || true
+test -d external/popt ||\
+	(curl -so external/popt.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/popt.tar.gz &&\
+	cd external && gunzip popt.tar.gz && tar -xf popt.tar && rm popt.tar)
+curl -so external/lua.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/lua.tar.gz || true
+cd external && test -e lua.tar.gz && gunzip lua.tar.gz || true
+cd external && test -e lua.tar && tar -xf lua.tar || true
+test -e external/lua.tar && rm external/lua.tar || true
+test -d external/lua ||\
+	(curl -so external/lua.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/lua.tar.gz &&\
+	cd external && gunzip lua.tar.gz && tar -xf lua.tar && rm lua.tar)
+curl -so external/rpm.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/rpm.tar.gz || true
+cd external && test -e rpm.tar.gz && gunzip rpm.tar.gz || true
+cd external && test -e rpm.tar && tar -xf rpm.tar || true
+test -e external/rpm.tar && rm external/rpm.tar || true
+test -d external/rpm ||\
+	(curl -so external/rpm.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/rpm.tar.gz &&\
+	cd external && gunzip rpm.tar.gz && tar -xf rpm.tar && rm rpm.tar)
+curl -so external/rocksdb.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/rocksdb.tar.gz || true
+cd external && test -e rocksdb.tar.gz && gunzip rocksdb.tar.gz || true
+cd external && test -e rocksdb.tar && tar -xf rocksdb.tar || true
+test -e external/rocksdb.tar && rm external/rocksdb.tar || true
+test -d external/rocksdb ||\
+	(curl -so external/rocksdb.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/rocksdb.tar.gz &&\
+	cd external && gunzip rocksdb.tar.gz && tar -xf rocksdb.tar && rm rocksdb.tar)
+curl -so external/lzma.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/lzma.tar.gz || true
+cd external && test -e lzma.tar.gz && gunzip lzma.tar.gz || true
+cd external && test -e lzma.tar && tar -xf lzma.tar || true
+test -e external/lzma.tar && rm external/lzma.tar || true
+test -d external/lzma ||\
+	(curl -so external/lzma.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/lzma.tar.gz &&\
+	cd external && gunzip lzma.tar.gz && tar -xf lzma.tar && rm lzma.tar)
+curl -so external/cpp-httplib.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/cpp-httplib.tar.gz || true
+cd external && test -e cpp-httplib.tar.gz && gunzip cpp-httplib.tar.gz || true
+cd external && test -e cpp-httplib.tar && tar -xf cpp-httplib.tar || true
+test -e external/cpp-httplib.tar && rm external/cpp-httplib.tar || true
+test -d external/cpp-httplib ||\
+	(curl -so external/cpp-httplib.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/cpp-httplib.tar.gz &&\
+	cd external && gunzip cpp-httplib.tar.gz && tar -xf cpp-httplib.tar && rm cpp-httplib.tar)
+curl -so external/benchmark.tar.gz https://packages.wazuh.com/deps/30/libraries/linux/amd64/benchmark.tar.gz || true
+cd external && test -e benchmark.tar.gz && gunzip benchmark.tar.gz || true
+cd external && test -e benchmark.tar && tar -xf benchmark.tar || true
+test -e external/benchmark.tar && rm external/benchmark.tar || true
+test -d external/benchmark ||\
+	(curl -so external/benchmark.tar.gz https://packages.wazuh.com/deps/30/libraries/sources/benchmark.tar.gz &&\
+	cd external && gunzip benchmark.tar.gz && tar -xf benchmark.tar && rm benchmark.tar)
+find shared_modules/http-request -type f -exec false {} + &&\
+	((test -e shared_modules/http-request.tar || curl -so shared_modules/http-request.tar.gz -L https://github.com/wazuh/wazuh-http-request/tarball/v1.0.0) &&\
+	(gunzip shared_modules/http-request.tar.gz || (rm -f shared_modules/http-request.tar.gz && echo "Error decompressing shared_modules/http-request.tar.gz maybe wrong branch was supplied!" && false)) &&\
+	tar -xf shared_modules/http-request.tar --strip-components=1 -C shared_modules/http-request &&\
+	rm shared_modules/http-request.tar) || true
+make[2]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+make -j2 -C src/ TARGET=agent USE_SELINUX=yes DEBUG=no
+make[2]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+cp /usr/local/gcc-9.4.0/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../lib64/libstdc++.so.6 libstdc++.so.6
+cp /usr/local/gcc-9.4.0/lib/gcc/x86_64-pc-linux-gnu/9.4.0/../../../../lib64/libgcc_s.so.1 libgcc_s.so.1
+strip -x libgcc_s.so.1
+checkmodule -M -m -o selinux/wazuh.mod selinux/wazuh.te
+checkmodule:  loading policy configuration from selinux/wazuh.te
+checkmodule:  policy configuration loaded
+checkmodule:  writing binary representation (version 14) to selinux/wazuh.mod
+semodule_package -o selinux/wazuh.pp -m selinux/wazuh.mod
+strip -x libstdc++.so.6
+make build_sysinfo build_shared_modules build_syscollector
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+    [34;1mCC[0m [37;1mlibwazuhext.so[0m
+cd data_provider/ && mkdir -p build && cd build && cmake     .. && make
+cd shared_modules/dbsync/ && mkdir -p build && cd build && cmake    .. && make
+-- The C compiler identification is GNU 9.4.0
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features - done
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test HAS_OPTIONAL
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+Scanning dependencies of target dbsync
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 10%] Building CXX object CMakeFiles/dbsync.dir/src/dbsync.cpp.o
+-- Performing Test HAS_OPTIONAL - Success
+-- Performing Test HAS_FILESYSTEM
+-- Performing Test HAS_FILESYSTEM - Success
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+Scanning dependencies of target urlrequest
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[  5%] Building CXX object /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/http-request/build/CMakeFiles/urlrequest.dir/src/HTTPRequest.cpp.o
+[ 11%] Building CXX object /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/http-request/build/CMakeFiles/urlrequest.dir/src/UNIXSocketRequest.cpp.o
+[ 20%] Building CXX object CMakeFiles/dbsync.dir/src/dbsyncPipelineFactory.cpp.o
+[ 30%] Building CXX object CMakeFiles/dbsync.dir/src/dbsync_implementation.cpp.o
+[ 16%] Linking CXX static library /build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build/lib/liburlrequest.a
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[ 16%] Built target urlrequest
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+Scanning dependencies of target sysinfo
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[ 22%] Building CXX object CMakeFiles/sysinfo.dir/src/network/networkInterfaceLinux.cpp.o
+[ 40%] Building CXX object CMakeFiles/dbsync.dir/src/sqlite/sqlite_dbengine.cpp.o
+[ 27%] Building CXX object CMakeFiles/sysinfo.dir/src/osinfo/sysOsParsers.cpp.o
+[ 50%] Building CXX object CMakeFiles/dbsync.dir/src/sqlite/sqlite_wrapper.cpp.o
+[ 60%] Linking CXX shared library lib/libdbsync.so
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 60%] Built target dbsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+Scanning dependencies of target dbsync_example
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 70%] Building CXX object example/CMakeFiles/dbsync_example.dir/main.cpp.o
+[ 80%] Linking CXX executable ../bin/dbsync_example
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 80%] Built target dbsync_example
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+Scanning dependencies of target dbsync_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 90%] Building CXX object testtool/CMakeFiles/dbsync_test_tool.dir/main.cpp.o
+[ 33%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserApk.cpp.o
+[ 38%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserDeb.cpp.o
+[ 44%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserExtra.cpp.o
+[ 50%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserRpm.cpp.o
+[100%] Linking CXX executable ../bin/dbsync_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[100%] Built target dbsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+cd shared_modules/rsync/ && mkdir -p build && cd build && cmake     .. && make
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+Scanning dependencies of target rsync
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 12%] Building CXX object CMakeFiles/rsync.dir/src/rsync.cpp.o
+[ 55%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserRpmLegacy.cpp.o
+[ 25%] Building CXX object CMakeFiles/rsync.dir/src/rsyncImplementation.cpp.o
+[ 61%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/packageLinuxParserSnap.cpp.o
+[ 66%] Building CXX object CMakeFiles/sysinfo.dir/src/packages/rpmPackageManager.cpp.o
+[ 72%] Building CXX object CMakeFiles/sysinfo.dir/src/sysInfoLinux.cpp.o
+[ 37%] Linking CXX shared library lib/librsync.so
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 37%] Built target rsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+Scanning dependencies of target rsync_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 50%] Building CXX object testtool/CMakeFiles/rsync_test_tool.dir/main.cpp.o
+[ 62%] Building CXX object testtool/CMakeFiles/rsync_test_tool.dir/agentEmulator.cpp.o
+[ 75%] Building CXX object testtool/CMakeFiles/rsync_test_tool.dir/oneTimeSync.cpp.o
+[ 77%] Building CXX object CMakeFiles/sysinfo.dir/src/utilsWrapperLinux.cpp.o
+[ 87%] Building CXX object testtool/CMakeFiles/rsync_test_tool.dir/managerEmulator.cpp.o
+[100%] Linking CXX executable ../bin/rsync_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[100%] Built target rsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 83%] Building CXX object CMakeFiles/sysinfo.dir/src/sysInfo.cpp.o
+[ 88%] Linking CXX shared library lib/libsysinfo.so
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[ 88%] Built target sysinfo
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+Scanning dependencies of target sysinfo_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[ 94%] Building CXX object testtool/CMakeFiles/sysinfo_test_tool.dir/main.cpp.o
+[100%] Linking CXX executable ../bin/sysinfo_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[100%] Built target sysinfo_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+cd wazuh_modules/syscollector/ && mkdir -p build && cd build && cmake -DTARGET=agent     .. && make
+-- The C compiler identification is GNU 9.4.0
+-- The CXX compiler identification is GNU 9.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+Scanning dependencies of target syscollector
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[ 16%] Building CXX object CMakeFiles/syscollector.dir/src/syscollector.cpp.o
+[ 33%] Building CXX object CMakeFiles/syscollector.dir/src/syscollectorImp.cpp.o
+[ 50%] Building CXX object CMakeFiles/syscollector.dir/src/syscollectorNormalizer.cpp.o
+[ 66%] Linking CXX shared library lib/libsyscollector.so
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[ 66%] Built target syscollector
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+Scanning dependencies of target syscollector_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[ 83%] Building CXX object testtool/CMakeFiles/syscollector_test_tool.dir/main.cpp.o
+[100%] Linking CXX executable ../bin/syscollector_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[100%] Built target syscollector_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+make wazuh-agentd agent-auth wazuh-logcollector wazuh-syscheckd wazuh-execd manage_agents active-responses wazuh-modulesd
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+    [34mCC[0m [33mclient-agent/agcom.o[0m
+    [34mCC[0m [33mclient-agent/agentd.o[0m
+    [34mCC[0m [33mclient-agent/buffer.o[0m
+    [34mCC[0m [33mclient-agent/config.o[0m
+    [34mCC[0m [33mclient-agent/event-forward.o[0m
+    [34mCC[0m [33mclient-agent/main.o[0m
+    [34mCC[0m [33mclient-agent/notify.o[0m
+    [34mCC[0m [33mclient-agent/receiver.o[0m
+    [34mCC[0m [33mclient-agent/request.o[0m
+    [34mCC[0m [33mclient-agent/restart_agent.o[0m
+    [34mCC[0m [33mclient-agent/rotate_log.o[0m
+    [34mCC[0m [33mclient-agent/sendmsg.o[0m
+    [34mCC[0m [33mclient-agent/start_agent.o[0m
+    [34mCC[0m [33mclient-agent/state.o[0m
+    [34mCC[0m [33mmonitord/rotate_log.o[0m
+    [34mCC[0m [33mmonitord/compress_log.o[0m
+    [34mCC[0m [33mconfig/active-response.o[0m
+    [34mCC[0m [33mconfig/agentlessd-config.o[0m
+    [34mCC[0m [33mconfig/alerts-config.o[0m
+    [34mCC[0m [33mconfig/authd-config.o[0m
+    [34mCC[0m [33mconfig/authd-key-request-config.o[0m
+    [34mCC[0m [33mconfig/buffer-config.o[0m
+    [34mCC[0m [33mconfig/client-config.o[0m
+    [34mCC[0m [33mconfig/cluster-config.o[0m
+config/cluster-config.c: In function 'Read_Cluster':
+config/cluster-config.c:47:24: warning: unused variable 'api_port' [-Wunused-variable]
+   47 |     static const char *api_port = "api_port";
+      |                        ^~~~~~~~
+At top level:
+config/cluster-config.c:47:24: warning: 'api_port' defined but not used [-Wunused-variable]
+    [34mCC[0m [33mconfig/config.o[0m
+    [34mCC[0m [33mconfig/csyslogd-config.o[0m
+    [34mCC[0m [33mconfig/dbd-config.o[0m
+    [34mCC[0m [33mconfig/email-alerts-config.o[0m
+    [34mCC[0m [33mconfig/global-config.o[0m
+    [34mCC[0m [33mconfig/indexer-config.o[0m
+    [34mCC[0m [33mconfig/integrator-config.o[0m
+config/global-config.c: In function 'Read_Global':
+config/global-config.c:161:17: warning: unused variable 'xml_cti_url' [-Wunused-variable]
+  161 |     const char *xml_cti_url = "cti-url";
+      |                 ^~~~~~~~~~~
+config/global-config.c:160:17: warning: unused variable 'xml_limits' [-Wunused-variable]
+  160 |     const char *xml_limits = "limits";
+      |                 ^~~~~~~~~~
+config/global-config.c:125:31: warning: unused parameter 'xml' [-Wunused-parameter]
+  125 | int Read_Global(const OS_XML *xml, XML_NODE node, void *configp, void *mailp)
+      |                 ~~~~~~~~~~~~~~^~~
+    [34mCC[0m [33mconfig/labels-config.o[0m
+    [34mCC[0m [33mconfig/localfile-config.o[0m
+    [34mCC[0m [33mconfig/logtest-config.o[0m
+    [34mCC[0m [33mconfig/remote-config.o[0m
+    [34mCC[0m [33mconfig/reports-config.o[0m
+    [34mCC[0m [33mconfig/rootcheck-config.o[0m
+    [34mCC[0m [33mconfig/rules-config.o[0m
+    [34mCC[0m [33mconfig/socket-config.o[0m
+    [34mCC[0m [33mconfig/syscheck-config.o[0m
+    [34mCC[0m [33mconfig/wazuh_db-config.o[0m
+    [34mCC[0m [33mconfig/wmodules-agent-upgrade.o[0m
+    [34mCC[0m [33mconfig/wmodules-aws.o[0m
+    [34mCC[0m [33mconfig/wmodules-azure.o[0m
+    [34mCC[0m [33mconfig/wmodules-ciscat.o[0m
+    [34mCC[0m [33mconfig/wmodules-command.o[0m
+    [34mCC[0m [33mconfig/wmodules-config.o[0m
+    [34mCC[0m [33mconfig/wmodules-docker.o[0m
+    [34mCC[0m [33mconfig/wmodules-fluent.o[0m
+    [34mCC[0m [33mconfig/wmodules-gcp.o[0m
+    [34mCC[0m [33mconfig/wmodules-github.o[0m
+    [34mCC[0m [33mconfig/wmodules-key-request.o[0m
+    [34mCC[0m [33mconfig/wmodules-ms-graph.o[0m
+    [34mCC[0m [33mconfig/wmodules-office365.o[0m
+    [34mCC[0m [33mconfig/wmodules-oscap.o[0m
+    [34mCC[0m [33mconfig/wmodules-osquery-monitor.o[0m
+    [34mCC[0m [33mconfig/wmodules-sca.o[0m
+    [34mCC[0m [33mconfig/wmodules-syscollector.o[0m
+    [34mCC[0m [33mconfig/wmodules-task-manager.o[0m
+    [34mCC[0m [33mconfig/wmodules-vulnerability-detection.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_aws.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_azure.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_ciscat.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_command.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_content_manager.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_control.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_database.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_docker.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_download.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_exec.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_fluent.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_gcp.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_github.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_ms_graph.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_office365.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_oscap.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_osquery_monitor.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_router.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_sca.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_syscollector.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_task_general.o[0m
+    [34mCC[0m [33mwazuh_modules/wm_vulnerability_scanner.o[0m
+    [34mCC[0m [33mwazuh_modules/wmcom.o[0m
+    [34mCC[0m [33mwazuh_modules/wmodules.o[0m
+    [34mCC[0m [33mwazuh_modules/agent_upgrade/wm_agent_upgrade.o[0m
+    [34mCC[0m [33mwazuh_modules/agent_upgrade/agent/wm_agent_upgrade_agent.o[0m
+    [34mCC[0m [33mwazuh_modules/agent_upgrade/agent/wm_agent_upgrade_com.o[0m
+    [34mCC[0m [33mwazuh_db/helpers/wdb_agents_helpers.o[0m
+    [34mCC[0m [33mwazuh_db/helpers/wdb_global_helpers.o[0m
+    [34mCC[0m [33mwazuh_db/wdb_shared.o[0m
+    [34mCC[0m [33mos_crypto/blowfish/bf_op.o[0m
+os_crypto/blowfish/bf_op.c: In function 'OS_BF_Str':
+os_crypto/blowfish/bf_op.c:34:5: warning: 'BF_set_key' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   34 |     BF_set_key(&key, (int)strlen(charkey), (const uchar *)charkey);
+      |     ^~~~~~~~~~
+In file included from os_crypto/blowfish/bf_op.c:19:
+external/openssl/include/openssl/blowfish.h:50:28: note: declared here
+   50 | OSSL_DEPRECATEDIN_3_0 void BF_set_key(BF_KEY *key, int len,
+      |                            ^~~~~~~~~~
+os_crypto/blowfish/bf_op.c:36:5: warning: 'BF_cbc_encrypt' is deprecated: Since OpenSSL 3.0 [-Wdeprecated-declarations]
+   36 |     BF_cbc_encrypt((const uchar *)input, (uchar *)output, (long)size,
+      |     ^~~~~~~~~~~~~~
+In file included from os_crypto/blowfish/bf_op.c:19:
+external/openssl/include/openssl/blowfish.h:57:28: note: declared here
+   57 | OSSL_DEPRECATEDIN_3_0 void BF_cbc_encrypt(const unsigned char *in,
+      |                            ^~~~~~~~~~~~~~
+    [34mCC[0m [33mos_crypto/md5/md5_op.o[0m
+    [34mCC[0m [33mos_crypto/sha1/sha1_op.o[0m
+    [34mCC[0m [33mos_crypto/shared/keys.o[0m
+    [34mCC[0m [33mos_crypto/shared/msgs.o[0m
+    [34mCC[0m [33mos_crypto/md5_sha1/md5_sha1_op.o[0m
+    [34mCC[0m [33mos_crypto/md5_sha1_sha256/md5_sha1_sha256_op.o[0m
+    [34mCC[0m [33mos_crypto/sha256/sha256_op.o[0m
+    [34mCC[0m [33mos_crypto/sha512/sha512_op.o[0m
+    [34mCC[0m [33mos_crypto/aes/aes_op.o[0m
+    [34mCC[0m [33mos_crypto/hmac/hmac.o[0m
+    [34mCC[0m [33mos_crypto/signature/signature.o[0m
+    [34mCC[0m [33mshared/agent_messages_adapter.o[0m
+    [34mCC[0m [33mshared/agent_op.o[0m
+    [34mCC[0m [33mshared/atomic.o[0m
+    [34mCC[0m [33mshared/audit_op.o[0m
+    [34mCC[0m [33mshared/auth_client.o[0m
+    [34mCC[0m [33mshared/b64.o[0m
+    [34mCC[0m [33mshared/binaries_op.o[0m
+    [34mCC[0m [33mshared/bqueue_op.o[0m
+    [34mCC[0m [33mshared/buffer_op.o[0m
+    [34mCC[0m [33mshared/bzip2_op.o[0m
+    [34mCC[0m [33mshared/cluster_utils.o[0m
+    [34mCC[0m [33mshared/cryptography.o[0m
+    [34mCC[0m [33mshared/custom_output_search_replace.o[0m
+    [34mCC[0m [33mshared/debug_op.o[0m
+    [34mCC[0m [33mshared/dll_load_notify.o[0m
+    [34mCC[0m [33mshared/enrollment_op.o[0m
+    [34mCC[0m [33mshared/exec_op.o[0m
+    [34mCC[0m [33mshared/expression.o[0m
+    [34mCC[0m [33mshared/file-queue.o[0m
+    [34mCC[0m [33mshared/file_op.o[0m
+    [34mCC[0m [33mshared/fs_op.o[0m
+    [34mCC[0m [33mshared/hash_op.o[0m
+    [34mCC[0m [33mshared/help.o[0m
+    [34mCC[0m [33mshared/integrity_op.o[0m
+    [34mCC[0m [33mshared/json-queue.o[0m
+    [34mCC[0m [33mshared/json_op.o[0m
+    [34mCC[0m [33mshared/labels_op.o[0m
+    [34mCC[0m [33mshared/list_op.o[0m
+    [34mCC[0m [33mshared/log_builder.o[0m
+    [34mCC[0m [33mshared/logging_helper.o[0m
+    [34mCC[0m [33mshared/math_op.o[0m
+    [34mCC[0m [33mshared/mem_op.o[0m
+    [34mCC[0m [33mshared/mq_op.o[0m
+    [34mCC[0m [33mshared/notify_op.o[0m
+    [34mCC[0m [33mshared/os_utils.o[0m
+    [34mCC[0m [33mshared/privsep_op.o[0m
+    [34mCC[0m [33mshared/pthreads_op.o[0m
+    [34mCC[0m [33mshared/queue_linked_op.o[0m
+    [34mCC[0m [33mshared/queue_op.o[0m
+    [34mCC[0m [33mshared/randombytes.o[0m
+    [34mCC[0m [33mshared/rbtree_op.o[0m
+    [34mCC[0m [33mshared/read-agents.o[0m
+    [34mCC[0m [33mshared/read-alert.o[0m
+    [34mCC[0m [33mshared/regex_op.o[0m
+    [34mCC[0m [33mshared/remoted_op.o[0m
+    [34mCC[0m [33mshared/report_op.o[0m
+    [34mCC[0m [33mshared/request_op.o[0m
+    [34mCC[0m [33mshared/rootcheck_op.o[0m
+    [34mCC[0m [33mshared/rules_op.o[0m
+    [34mCC[0m [33mshared/rwlock_op.o[0m
+    [34mCC[0m [33mshared/schedule_scan.o[0m
+    [34mCC[0m [33mshared/sig_op.o[0m
+    [34mCC[0m [33mshared/store_op.o[0m
+    [34mCC[0m [33mshared/string_op.o[0m
+    [34mCC[0m [33mshared/sym_load.o[0m
+    [34mCC[0m [33mshared/syscheck_op.o[0m
+    [34mCC[0m [33mshared/sysinfo_utils.o[0m
+    [34mCC[0m [33mshared/time_op.o[0m
+    [34mCC[0m [33mshared/url.o[0m
+    [34mCC[0m [33mshared/utf8_op.o[0m
+    [34mCC[0m [33mshared/validate_op.o[0m
+    [34mCC[0m [33mshared/vector_op.o[0m
+    [34mCC[0m [33mshared/version_op.o[0m
+    [34mCC[0m [33mshared/wait_op.o[0m
+    [34mCC[0m [33mshared/wazuhdb_op.o[0m
+    [34mCC[0m [33mshared/yaml2json.o[0m
+    [34mCC[0m [33mos_net/os_net.o[0m
+    [34mCC[0m [33mos_regex/os_match.o[0m
+    [34mCC[0m [33mos_regex/os_match_compile.o[0m
+    [34mCC[0m [33mos_regex/os_match_execute.o[0m
+    [34mCC[0m [33mos_regex/os_match_free_pattern.o[0m
+    [34mCC[0m [33mos_regex/os_regex.o[0m
+    [34mCC[0m [33mos_regex/os_regex_compile.o[0m
+    [34mCC[0m [33mos_regex/os_regex_execute.o[0m
+    [34mCC[0m [33mos_regex/os_regex_free_pattern.o[0m
+    [34mCC[0m [33mos_regex/os_regex_maps.o[0m
+    [34mCC[0m [33mos_regex/os_regex_match.o[0m
+    [34mCC[0m [33mos_regex/os_regex_startswith.o[0m
+    [34mCC[0m [33mos_regex/os_regex_str.o[0m
+    [34mCC[0m [33mos_regex/os_regex_strbreak.o[0m
+    [34mCC[0m [33mos_xml/os_xml.o[0m
+    [34mCC[0m [33mos_xml/os_xml_access.o[0m
+    [34mCC[0m [33mos_xml/os_xml_node_access.o[0m
+    [34mCC[0m [33mos_xml/os_xml_variables.o[0m
+    [34mCC[0m [33mos_xml/os_xml_writer.o[0m
+    [34mCC[0m [33mos_zlib/os_zlib.o[0m
+    [34mCC[0m [33mos_auth/ssl.o[0m
+    [34mCC[0m [33mos_auth/check_cert.o[0m
+    [34mCC[0m [33maddagent/validate.o[0m
+    [34mCC[0m [33manalysisd/logmsg.o[0m
+    [34mCC[0m [33mos_auth/main-client.o[0m
+    [34mCC[0m [33mlogcollector/config.o[0m
+    [34mCC[0m [33mlogcollector/journal_log.o[0m
+    [34mCC[0m [33mlogcollector/lccom.o[0m
+    [34mCC[0m [33mlogcollector/logcollector.o[0m
+    [34mCC[0m [33mlogcollector/macos_log.o[0m
+    [34mCC[0m [33mlogcollector/main.o[0m
+    [34mCC[0m [33mlogcollector/read_audit.o[0m
+    [34mCC[0m [33mlogcollector/read_command.o[0m
+    [34mCC[0m [33mlogcollector/read_djb_multilog.o[0m
+    [34mCC[0m [33mlogcollector/read_fullcommand.o[0m
+    [34mCC[0m [33mlogcollector/read_journald.o[0m
+    [34mCC[0m [33mlogcollector/read_json.o[0m
+    [34mCC[0m [33mlogcollector/read_macos.o[0m
+    [34mCC[0m [33mlogcollector/read_mssql_log.o[0m
+    [34mCC[0m [33mlogcollector/read_multiline.o[0m
+    [34mCC[0m [33mlogcollector/read_multiline_regex.o[0m
+    [34mCC[0m [33mlogcollector/read_mysql_log.o[0m
+    [34mCC[0m [33mlogcollector/read_nmapg.o[0m
+    [34mCC[0m [33mlogcollector/read_ossecalert.o[0m
+    [34mCC[0m [33mlogcollector/read_postgresql_log.o[0m
+    [34mCC[0m [33mlogcollector/read_snortfull.o[0m
+    [34mCC[0m [33mlogcollector/read_syslog.o[0m
+    [34mCC[0m [33mlogcollector/read_ucs2_be.o[0m
+    [34mCC[0m [33mlogcollector/read_ucs2_le.o[0m
+    [34mCC[0m [33mlogcollector/read_win_el.o[0m
+    [34mCC[0m [33mlogcollector/read_win_event_channel.o[0m
+    [34mCC[0m [33mlogcollector/state.o[0m
+    [34mCC[0m [33mrootcheck/check_open_ports.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_dev.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_files.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_if.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_pids.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_policy.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_ports.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_readproc.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_sys.o[0m
+    [34mCC[0m [33mrootcheck/check_rc_trojans.o[0m
+    [34mCC[0m [33mrootcheck/common.o[0m
+    [34mCC[0m [33mrootcheck/common_rcl.o[0m
+    [34mCC[0m [33mrootcheck/config.o[0m
+    [34mCC[0m [33mrootcheck/os_string.o[0m
+    [34mCC[0m [33mrootcheck/rootcheck.o[0m
+    [34mCC[0m [33mrootcheck/run_rk_check.o[0m
+    [34mCC[0m [33mrootcheck/unix-process.o[0m
+    [34mCC[0m [33mrootcheck/win-common.o[0m
+    [34mCC[0m [33mrootcheck/win-process.o[0m
+cd shared_modules/dbsync/ && mkdir -p build && cd build && cmake    .. && make
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+    [34mCC[0m [33mos_execd/config.o[0m
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 60%] Built target dbsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 80%] Built target dbsync_example
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[100%] Built target dbsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+cd shared_modules/rsync/ && mkdir -p build && cd build && cmake     .. && make
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 37%] Built target rsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[100%] Built target rsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+    [34mCC[0m [33mos_execd/exec.o[0m
+    [34mCC[0m [33mos_execd/execd.o[0m
+    [34mCC[0m [33mos_execd/main.o[0m
+    [34mCC[0m [33mos_execd/wcom.o[0m
+    [34mCC[0m [33mactive-response/active_responses.o[0m
+    [34mCC[0m [33maddagent/main.o[0m
+    [34mCC[0m [33maddagent/manage_agents.o[0m
+    [34mCC[0m [33maddagent/manage_keys.o[0m
+    [34mCC[0m [33maddagent/read_from_user.o[0m
+    [34mCC[0m [33mactive-response/firewalls/default-firewall-drop.o[0m
+    [34mCC[0m [33mshared/file_op_proc.o[0m
+    [34mCC[0m [33mshared/debug_op_proc.o[0m
+    [34mCC[0m [33mactive-response/firewalls/pf.o[0m
+    [34mCC[0m [33mactive-response/firewalls/npf.o[0m
+    [34mCC[0m [33mactive-response/firewalls/ipfw.o[0m
+    [34mCC[0m [33mactive-response/firewalld-drop.o[0m
+    [34mCC[0m [33mactive-response/disable-account.o[0m
+    [34mCC[0m [33mactive-response/host-deny.o[0m
+    [34mCC[0m [33mactive-response/ip-customblock.o[0m
+    [34mCC[0m [33mactive-response/restart-wazuh.o[0m
+    [34mCC[0m [33mactive-response/route-null.o[0m
+    [34mCC[0m [33mactive-response/kaspersky.o[0m
+    [34mCC[0m [33mactive-response/wazuh-slack.o[0m
+    [34mCC[0m [33mwazuh_modules/main.o[0m
+    [34;1mLINK[0m [37;1mlibwazuh.a[0m
+    [34;1mLINK[0m [37;1mlibrootcheck.a[0m
+    [34;1mRANLIB[0m [37;1mlibrootcheck.a[0m
+    [34;1mCC[0m [37;1mlibwazuhshared.so[0m
+    [34;1mRANLIB[0m [37;1mlibwazuh.a[0m
+    [34;1mCC[0m [37;1mwazuh-agentd[0m
+    [34;1mCC[0m [37;1magent-auth[0m
+    [34;1mCC[0m [37;1mwazuh-logcollector[0m
+cd syscheckd && mkdir -p build && cd build && cmake  -DCMAKE_C_FLAGS="-DOSSECHIDS -DUSER=\"wazuh\" -DGROUPGLOBAL=\"wazuh\" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT -pipe -Wall -Wextra -std=gnu99"   .. && make
+    [34;1mCC[0m [37;1mwazuh-execd[0m
+-- The C compiler identification is GNU 9.4.0
+    [34;1mCC[0m [37;1mmanage_agents[0m
+-- The CXX compiler identification is GNU 9.4.0
+    [34;1mCC[0m [37;1mdefault-firewall-drop[0m
+-- Detecting C compiler ABI info
+    [34;1mCC[0m [37;1mpf[0m
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+    [34;1mCC[0m [37;1mnpf[0m
+    [34;1mCC[0m [37;1mipfw[0m
+    [34;1mCC[0m [37;1mfirewalld-drop[0m
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done
+-- Generating done
+    [34;1mCC[0m [37;1mdisable-account[0m
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+    [34;1mCC[0m [37;1mhost-deny[0m
+    [34;1mCC[0m [37;1mip-customblock[0m
+Scanning dependencies of target fimdb
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[  4%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/db.cpp.o
+[  8%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/dbFileItem.cpp.o
+[ 12%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/dbRegistryKey.cpp.o
+    [34;1mCC[0m [37;1mrestart-wazuh[0m
+[ 16%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/dbRegistryValue.cpp.o
+    [34;1mCC[0m [37;1mroute-null[0m
+    [34;1mCC[0m [37;1mkaspersky[0m
+[ 20%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/file.cpp.o
+[ 24%] Building CXX object src/db/CMakeFiles/fimdb.dir/src/fimDB.cpp.o
+    [34;1mCC[0m [37;1mwazuh-slack[0m
+    [34;1mCC[0m [37;1mwazuh-modulesd[0m
+[ 28%] Linking CXX shared library ../../lib/libfimdb.so
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 28%] Built target fimdb
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+Scanning dependencies of target fimdb_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 32%] Building CXX object src/db/testtool/CMakeFiles/fimdb_test_tool.dir/main.cpp.o
+Scanning dependencies of target wazuh-syscheckd
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 36%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/config.c.o
+[ 40%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/create_db.c.o
+[ 44%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/fim_diff_changes.c.o
+[ 48%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/main.c.o
+[ 52%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/registry/events.c.o
+[ 56%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/registry/registry.c.o
+[ 60%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/run_check.c.o
+[ 64%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/run_realtime.c.o
+[ 68%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/syscheck.c.o
+[ 72%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/syscom.c.o
+[ 76%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/whodata/audit_healthcheck.c.o
+[ 80%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/whodata/audit_parse.c.o
+[ 84%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/whodata/audit_rule_handling.c.o
+[ 88%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/whodata/syscheck_audit.c.o
+[ 92%] Building C object CMakeFiles/wazuh-syscheckd.dir/src/whodata/win_whodata.c.o
+[ 96%] Linking C executable bin/wazuh-syscheckd
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 96%] Built target wazuh-syscheckd
+[100%] Linking CXX executable ../../../bin/fimdb_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[100%] Built target fimdb_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+make settings
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+
+General settings:
+    TARGET:             agent
+    V:                  
+    DEBUG:              no
+    DEBUGAD             
+    INSTALLDIR:         
+    DATABASE:           
+    ONEWAY:             no
+    CLEANFULL:          no
+    RESOURCES_URL:      https://packages.wazuh.com/deps/30
+    EXTERNAL_SRC_ONLY:  
+    HTTP_REQUEST_BRANCH:v1.0.0
+User settings:
+    WAZUH_GROUP:        wazuh
+    WAZUH_USER:         wazuh
+USE settings:
+    USE_ZEROMQ:         no
+    USE_GEOIP:          no
+    USE_PRELUDE:        no
+    USE_INOTIFY:        no
+    USE_BIG_ENDIAN:     no
+    USE_SELINUX:        yes
+    USE_AUDIT:          yes
+    DISABLE_SYSC:       no
+    DISABLE_CISCAT:     no
+    IMAGE_TRUST_CHECKS: 1
+    CA_NAME:            DigiCert Assured ID Root CA
+Mysql settings:
+    includes:           
+    libs:               
+Pgsql settings:
+    includes:           
+    libs:               
+Defines:
+    -DOSSECHIDS -DUSER="wazuh" -DGROUPGLOBAL="wazuh" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT
+Compiler:
+    CFLAGS            -pthread -Iexternal/pacman/lib/libalpm/ -Iexternal/libarchive/libarchive -Wl,--start-group -Iexternal/audit-userspace/lib -DNDEBUG -O2 -DOSSECHIDS -DUSER="wazuh" -DGROUPGLOBAL="wazuh" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT -pipe -Wall -Wextra -std=gnu99 -I./ -I./headers/ -Iexternal/openssl/include -Iexternal/cJSON/ -Iexternal/libyaml/include -Iexternal/curl/include -Iexternal/msgpack/include -Iexternal/bzip2/ -Ishared_modules/common -Ishared_modules/dbsync/include -Ishared_modules/rsync/include -Iwazuh_modules/syscollector/include  -Idata_provider/include  -Iexternal/libpcre2/include -Iexternal/rpm//builddir/output/include -Isyscheckd/include -Ishared_modules/router/include -Ishared_modules/content_manager/include -Iwazuh_modules/vulnerability_scanner/include -I./shared_modules/ 
+    LDFLAGS           '-Wl,-rpath,/../lib' -pthread -lrt -ldl -O2 -Lshared_modules/dbsync/build/lib -Lshared_modules/rsync/build/lib  -Lwazuh_modules/syscollector/build/lib -Ldata_provider/build/lib -Lsyscheckd/build/lib
+    LIBS              -lrt -ldl -lm 
+    CC                gcc
+    MAKE              make
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+
+[32;1mDone building agent
+[0m
+make[2]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+USER_LANGUAGE="en" \
+	USER_NO_STOP="y" \
+	USER_INSTALL_TYPE="agent" \
+	USER_DIR="/var/ossec" \
+	USER_DELETE_DIR="y" \
+	USER_ENABLE_ACTIVE_RESPONSE="y" \
+	USER_ENABLE_SYSCHECK="y" \
+	USER_ENABLE_ROOTCHECK="y" \
+	USER_ENABLE_OPENSCAP="y" \
+	USER_ENABLE_CISCAT="y" \
+	USER_ENABLE_SYSCOLLECTOR="y" \
+	USER_UPDATE="n" \
+	USER_AGENT_SERVER_IP="MANAGER_IP" \
+	USER_CA_STORE="/path/to/my_cert.pem" \
+	USER_AUTO_START="n" \
+	./install.sh
+
+ Wazuh v4.9.0 (Rev. 40907) Installation Script - https://www.wazuh.com
+
+ You are about to start the installation process of Wazuh.
+ You must have a C compiler pre-installed in your system.
+
+  - System: Linux 74b7ec6ae9f1 6.8.0-1014-gcp (debian 7.0)
+  - User: root
+  - Host: 74b7ec6ae9f1
+
+
+  -- Press ENTER to continue or Ctrl-C to abort. --
+
+    - Installation will be made at  /var/ossec .
+
+3- Configuring Wazuh.
+
+
+  3.2- Do you want to run the integrity check daemon? (y/n) [y]: 
+   - Running syscheck (integrity check daemon).
+
+  3.3- Do you want to run the rootkit detection engine? (y/n) [y]: 
+   - Running rootcheck (rootkit detection).
+
+  3.5 - Do you want to enable active response? (y/n) [y]: 
+   - Active response enabled.
+
+  3.6- Remote upgrades use packages signed by the system maintainer. The
+       corresponding certificate (or root certificate) must be installed
+       in the system in order to verify the WPK packages. By default,
+       the root certificate by Wazuh is installed.
+
+   - Do you want to add more certificates? (y/n)? [n]:    - Enter the path to a X509 certificate or a certificate folder: 
+     Warning: No such file or directory "/path/to/my_cert.pem".
+
+  3.7- Setting the configuration to analyze the following logs:
+
+    -- /var/ossec/logs/active-responses.log
+    -- /var/log/dpkg.log
+
+ - If you want to monitor any other file, just change
+   the ossec.conf and add a new localfile entry.
+   Any questions about the configuration can be answered
+   by visiting us online at https://documentation.wazuh.com/.
+
+
+   --- Press ENTER to continue ---
+
+4- Installing the system
+
+DIR="/var/ossec"
+ - Running the Makefile
+
+make[2]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+make build_sysinfo build_shared_modules build_syscollector
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+cd data_provider/ && mkdir -p build && cd build && cmake     .. && make
+cd shared_modules/dbsync/ && mkdir -p build && cd build && cmake    .. && make
+-- Configuring done
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[ 60%] Built target dbsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 80%] Built target dbsync_example
+[ 16%] Built target urlrequest
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[100%] Built target dbsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+cd shared_modules/rsync/ && mkdir -p build && cd build && cmake     .. && make
+[ 88%] Built target sysinfo
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+[100%] Built target sysinfo_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+-- Configuring done
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build'
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 37%] Built target rsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[100%] Built target rsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+cd wazuh_modules/syscollector/ && mkdir -p build && cd build && cmake -DTARGET=agent     .. && make
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[ 66%] Built target syscollector
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+[100%] Built target syscollector_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/wazuh_modules/syscollector/build'
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+make wazuh-agentd agent-auth wazuh-logcollector wazuh-syscheckd wazuh-execd manage_agents active-responses wazuh-modulesd
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+make[3]: `wazuh-agentd' is up to date.
+make[3]: `agent-auth' is up to date.
+make[3]: `wazuh-logcollector' is up to date.
+cd shared_modules/dbsync/ && mkdir -p build && cd build && cmake    .. && make
+make[3]: `wazuh-execd' is up to date.
+make[3]: `manage_agents' is up to date.
+make[3]: Nothing to be done for `active-responses'.
+make[3]: `wazuh-modulesd' is up to date.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 60%] Built target dbsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+[ 80%] Built target dbsync_example
+[100%] Built target dbsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build'
+cd shared_modules/rsync/ && mkdir -p build && cd build && cmake     .. && make
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[ 37%] Built target rsync
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+[100%] Built target rsync_test_tool
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build'
+cd syscheckd && mkdir -p build && cd build && cmake  -DCMAKE_C_FLAGS="-DOSSECHIDS -DUSER=\"wazuh\" -DGROUPGLOBAL=\"wazuh\" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT -pipe -Wall -Wextra -std=gnu99"   .. && make
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build
+make[4]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[5]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 28%] Built target fimdb
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[6]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[ 36%] Built target fimdb_test_tool
+make[6]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+[100%] Built target wazuh-syscheckd
+make[5]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[4]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build'
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+make settings
+make[3]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Makefile:2650: warning: overriding commands for target `win32/ui_resource.o'
+Makefile:2590: warning: ignoring old commands for target `win32/ui_resource.o'
+Makefile:2653: warning: overriding commands for target `win32/auth_resource.o'
+Makefile:2593: warning: ignoring old commands for target `win32/auth_resource.o'
+
+General settings:
+    TARGET:             agent
+    V:                  
+    DEBUG:              
+    DEBUGAD             
+    INSTALLDIR:         /var/ossec
+    DATABASE:           
+    ONEWAY:             no
+    CLEANFULL:          no
+    RESOURCES_URL:      https://packages.wazuh.com/deps/30
+    EXTERNAL_SRC_ONLY:  
+    HTTP_REQUEST_BRANCH:v1.0.0
+User settings:
+    WAZUH_GROUP:        wazuh
+    WAZUH_USER:         wazuh
+USE settings:
+    USE_ZEROMQ:         no
+    USE_GEOIP:          no
+    USE_PRELUDE:        no
+    USE_INOTIFY:        no
+    USE_BIG_ENDIAN:     no
+    USE_SELINUX:        yes
+    USE_AUDIT:          yes
+    DISABLE_SYSC:       no
+    DISABLE_CISCAT:     no
+    IMAGE_TRUST_CHECKS: 1
+    CA_NAME:            DigiCert Assured ID Root CA
+Mysql settings:
+    includes:           
+    libs:               
+Pgsql settings:
+    includes:           
+    libs:               
+Defines:
+    -DOSSECHIDS -DUSER="wazuh" -DGROUPGLOBAL="wazuh" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT
+Compiler:
+    CFLAGS            -pthread -Iexternal/pacman/lib/libalpm/ -Iexternal/libarchive/libarchive -Wl,--start-group -Iexternal/audit-userspace/lib -DNDEBUG -O2 -DOSSECHIDS -DUSER="wazuh" -DGROUPGLOBAL="wazuh" -DLinux -DINOTIFY_ENABLED -D_XOPEN_SOURCE=600 -D_GNU_SOURCE -DIMAGE_TRUST_CHECKS=1 -DCA_NAME='DigiCert Assured ID Root CA' -DENABLE_SYSC -DENABLE_CISCAT -DENABLE_AUDIT -DCLIENT -pipe -Wall -Wextra -std=gnu99 -I./ -I./headers/ -Iexternal/openssl/include -Iexternal/cJSON/ -Iexternal/libyaml/include -Iexternal/curl/include -Iexternal/msgpack/include -Iexternal/bzip2/ -Ishared_modules/common -Ishared_modules/dbsync/include -Ishared_modules/rsync/include -Iwazuh_modules/syscollector/include  -Idata_provider/include  -Iexternal/libpcre2/include -Iexternal/rpm//builddir/output/include -Isyscheckd/include -Ishared_modules/router/include -Ishared_modules/content_manager/include -Iwazuh_modules/vulnerability_scanner/include -I./shared_modules/ 
+    LDFLAGS           '-Wl,-rpath,/../lib' -pthread -lrt -ldl -O2 -Lshared_modules/dbsync/build/lib -Lshared_modules/rsync/build/lib  -Lwazuh_modules/syscollector/build/lib -Ldata_provider/build/lib -Lsyscheckd/build/lib
+    LIBS              -lrt -ldl -lm 
+    CC                gcc
+    MAKE              make
+make[3]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+
+[32;1mDone building agent
+[0m
+make[2]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0/src'
+Wait for success...
+success
+Removing old SCA policies...
+Installing SCA policies...
+
+
+ - System is Debian (Ubuntu or derivative).
+ - Init script modified to start Wazuh during boot.
+
+ - Configuration finished properly.
+
+ - To start Wazuh:
+      /var/ossec/bin/wazuh-control start
+
+ - To stop Wazuh:
+      /var/ossec/bin/wazuh-control stop
+
+ - The configuration can be viewed or modified at /var/ossec/etc/ossec.conf
+
+
+   Thanks for using Wazuh.
+   Please don't hesitate to contact us if you need help or find
+   any bugs.
+
+   Use our public Mailing List at:
+          https://groups.google.com/forum/#!forum/wazuh
+
+   More information can be found at:
+          - http://www.wazuh.com
+
+    ---  Press ENTER to finish (maybe more information below). ---
+
+ - More information at: 
+   https://documentation.wazuh.com/
+
+# Copying init.d script
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/etc/init.d/
+sed -i "s:WAZUH_HOME_TMP:/var/ossec:g" src/init/templates/ossec-hids-debian.init
+cp src/init/templates/ossec-hids-debian.init /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/etc/init.d/wazuh-agent
+# Copying systemd file
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/usr/lib/systemd/system/
+sed -i "s:WAZUH_HOME_TMP:/var/ossec:g" src/init/templates/wazuh-agent.service
+install -m 0644 src/init/templates/wazuh-agent.service /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/usr/lib/systemd/system/
+# Generating permission restoration file for postinstall
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"
+# Remove preinstalled log files
+rm -rf /var/ossec/logs/*.log
+rm -rf /var/ossec/logs/*.json
+# Clean the preinstalled configuration assesment files
+rm -rf /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/var/ossec/ruleset/sca
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/var/ossec/ruleset/sca
+./gen_permissions.sh /var/ossec/ /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/restore-permissions.sh
+# Copying to target
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/var/ossec/
+cp -r /var/ossec/. /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/var/ossec/
+# Copying install scripts to /usr/share
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/
+cp gen_ossec.sh /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/
+cp add_localfiles.sh /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/src
+cp src/VERSION /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/src/
+cp src/REVISION /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/src/
+# Install configuration assesment files and files templates
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/applications
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/generic
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/7
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/8
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/9
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/10
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/11
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/12
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/12/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/14/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/16/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/18/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/20/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/22/04
+cp -r ruleset/sca/* /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca
+cp etc/templates/config/generic/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/generic
+cp etc/templates/config/generic/sca.manager.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/generic
+cp etc/templates/config/debian/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian
+cp etc/templates/config/debian/7/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/7
+cp etc/templates/config/debian/8/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/8
+cp etc/templates/config/debian/9/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/9
+cp etc/templates/config/debian/10/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/10
+cp etc/templates/config/debian/11/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/11
+cp etc/templates/config/debian/12/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/debian/12
+cp etc/templates/config/ubuntu/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu
+cp etc/templates/config/ubuntu/12/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/12/04
+cp etc/templates/config/ubuntu/14/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/14/04
+cp etc/templates/config/ubuntu/16/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/16/04
+cp etc/templates/config/ubuntu/18/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/18/04
+cp etc/templates/config/ubuntu/20/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/20/04
+cp etc/templates/config/ubuntu/22/04/sca.files /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/sca/ubuntu/22/04
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/src/init
+cp -r src/init/*  /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/src/init
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/generic
+cp -r etc/templates/config/generic /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/debian
+cp -r etc/templates/config/debian /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/ubuntu
+cp -r etc/templates/config/ubuntu /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent"/var/ossec/packages_files/agent_installation_scripts"/etc/templates/config/
+# Copying systemd file
+mkdir -p /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/etc/systemd/system/
+sed -i "s:WAZUH_HOME_TMP:/var/ossec:g" src/init/templates/wazuh-agent.service
+cp src/init/templates/wazuh-agent.service /build_wazuh/agent/wazuh-agent-4.9.0/debian/wazuh-agent/etc/systemd/system/
+make[1]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0'
+   dh_installdocs
+	install -g 0 -o 0 -d debian/wazuh-agent/usr/share/doc/wazuh-agent
+	install -g 0 -o 0 -m 644 -p debian/copyright debian/wazuh-agent/usr/share/doc/wazuh-agent/copyright
+   dh_installchangelogs
+	install -o 0 -g 0 -p -m644 debian/changelog debian/wazuh-agent/usr/share/doc/wazuh-agent/changelog.Debian
+   dh_installexamples
+   dh_installman
+   dh_installcatalogs
+   dh_installcron
+   dh_installdebconf
+	install -o 0 -g 0 -d debian/wazuh-agent/DEBIAN
+	install -o 0 -g 0 -m 644 -p debian/templates debian/wazuh-agent/DEBIAN/templates
+	(grep -s -v misc:Depends debian/wazuh-agent.substvars; echo "misc:Depends=debconf (>= 0.5) | debconf-2.0") > debian/wazuh-agent.substvars.new
+	mv debian/wazuh-agent.substvars.new debian/wazuh-agent.substvars
+	echo "# Automatically added by dh_installdebconf">> debian/wazuh-agent.postrm.debhelper
+	sed "" /usr/share/debhelper/autoscripts/postrm-debconf >> debian/wazuh-agent.postrm.debhelper
+	echo '# End automatically added section' >> debian/wazuh-agent.postrm.debhelper
+   dh_installemacsen
+   dh_installifupdown
+   dh_installinfo
+   dh_pysupport
+dh_pysupport: This program is deprecated, you should use dh_python2 instead. Migration guide: http://deb.li/dhs2p
+	/usr/share/python-support/private/movemodules debian/wazuh-agent
+	(grep -s -v python:Depends debian/wazuh-agent.substvars; echo python:Depends=python) > debian/wazuh-agent.substvars.new
+	mv debian/wazuh-agent.substvars.new debian/wazuh-agent.substvars
+   dh_installinit
+   dh_installmenu
+   dh_installmime
+   dh_installmodules
+   dh_installlogcheck
+   dh_installlogrotate
+   dh_installpam
+   dh_installppp
+   dh_installudev
+   dh_installwm
+   dh_installxfonts
+   dh_installgsettings
+   dh_bugfiles
+   dh_ucf
+   dh_lintian
+	install -d debian/wazuh-agent/usr/share/lintian/overrides
+	install -p -m644 debian/wazuh-agent.lintian-overrides debian/wazuh-agent/usr/share/lintian/overrides/wazuh-agent
+   dh_gconf
+   dh_icons
+   dh_perl
+   dh_usrlocal
+   dh_link
+   dh_compress
+	cd debian/wazuh-agent
+	chmod a-x usr/share/doc/wazuh-agent/changelog.Debian
+	gzip -9nf usr/share/doc/wazuh-agent/changelog.Debian
+	cd '/build_wazuh/agent/wazuh-agent-4.9.0'
+   dh_fixperms
+	find debian/wazuh-agent  -print0 2>/dev/null | xargs -0r chown --no-dereference 0:0
+	find debian/wazuh-agent ! -type l  -print0 2>/dev/null | xargs -0r chmod go=rX,u+rw,a-s
+	find debian/wazuh-agent/usr/share/doc -type f  ! -regex 'debian/wazuh-agent/usr/share/doc/[^/]*/examples/.*' -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent/usr/share/doc -type d  -print0 2>/dev/null | xargs -0r chmod 755
+	find debian/wazuh-agent/usr/share/man debian/wazuh-agent/usr/man/ debian/wazuh-agent/usr/X11*/man/ -type f  -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent -perm -5 -type f \( -name '*.so.*' -or -name '*.so' -or -name '*.la' -or -name '*.a' \)  -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent/usr/include -type f  -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent/usr/share/applications -type f  -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent -perm -5 -type f \( -name '*.cmxs' \)  -print0 2>/dev/null | xargs -0r chmod 644
+	find debian/wazuh-agent/usr/lib/perl5 debian/wazuh-agent/usr/share/perl5 -type f -perm -5 -name '*.pm'  -print0 2>/dev/null | xargs -0r chmod a-X
+	find debian/wazuh-agent/etc/init.d -type f  -print0 2>/dev/null | xargs -0r chmod a+x
+	find debian/wazuh-agent/usr/lib -type f -name '*.ali'  -print0 2>/dev/null | xargs -0r chmod uga-w
+	find debian/wazuh-agent/usr/share/lintian/overrides -type f  -print0 2>/dev/null | xargs -0r chmod 644
+   debian/rules override_dh_strip
+make[1]: Entering directory `/build_wazuh/agent/wazuh-agent-4.9.0'
+dh_strip --no-automatic-dbgsym
+Unknown option: no-automatic-dbgsym
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libgcc_s.so.1
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libsyscollector.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libwazuhshared.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/librsync.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libdbsync.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libwazuhext.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libfimdb.so
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libstdc\+\+.so.6
+	strip --remove-section=.comment --remove-section=.note --strip-unneeded debian/wazuh-agent/var/ossec/lib/libsysinfo.so
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/route-null
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/host-deny
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/firewalld-drop
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/kaspersky
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/ip-customblock
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/pf
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/disable-account
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/npf
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/firewall-drop
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/default-firewall-drop
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/ipfw
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/wazuh-slack
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/active-response/bin/restart-wazuh
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/wazuh-agentd
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/agent-auth
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/manage_agents
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/wazuh-logcollector
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/wazuh-modulesd
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/wazuh-execd
+	strip --remove-section=.comment --remove-section=.note debian/wazuh-agent/var/ossec/bin/wazuh-syscheckd
+make[1]: Leaving directory `/build_wazuh/agent/wazuh-agent-4.9.0'
+   dh_makeshlibs
+	rm -f debian/wazuh-agent/DEBIAN/shlibs
+	echo 'libgcc_s 1 wazuh-agent' >>debian/wazuh-agent/DEBIAN/shlibs
+	echo 'libstdc++ 6 wazuh-agent' >>debian/wazuh-agent/DEBIAN/shlibs
+	echo "# Automatically added by dh_makeshlibs">> debian/wazuh-agent.postinst.debhelper
+	sed "" /usr/share/debhelper/autoscripts/postinst-makeshlibs >> debian/wazuh-agent.postinst.debhelper
+	echo '# End automatically added section' >> debian/wazuh-agent.postinst.debhelper
+	echo "# Automatically added by dh_makeshlibs"> debian/wazuh-agent.postrm.debhelper.new
+	sed "" /usr/share/debhelper/autoscripts/postrm-makeshlibs >> debian/wazuh-agent.postrm.debhelper.new
+	echo '# End automatically added section' >> debian/wazuh-agent.postrm.debhelper.new
+	cat debian/wazuh-agent.postrm.debhelper >> debian/wazuh-agent.postrm.debhelper.new
+	mv debian/wazuh-agent.postrm.debhelper.new debian/wazuh-agent.postrm.debhelper
+	chmod 644 debian/wazuh-agent/DEBIAN/shlibs
+	chown 0:0 debian/wazuh-agent/DEBIAN/shlibs
+   dh_installdeb
+	perl -pe 's~#DEBHELPER#~qx{cat debian/wazuh-agent.postinst.debhelper}~eg' < debian/postinst > debian/wazuh-agent/DEBIAN/postinst
+	chown 0:0 debian/wazuh-agent/DEBIAN/postinst
+	chmod 755 debian/wazuh-agent/DEBIAN/postinst
+	sed s/#DEBHELPER#// < debian/preinst > debian/wazuh-agent/DEBIAN/preinst
+	chown 0:0 debian/wazuh-agent/DEBIAN/preinst
+	chmod 755 debian/wazuh-agent/DEBIAN/preinst
+	sed s/#DEBHELPER#// < debian/prerm > debian/wazuh-agent/DEBIAN/prerm
+	chown 0:0 debian/wazuh-agent/DEBIAN/prerm
+	chmod 755 debian/wazuh-agent/DEBIAN/prerm
+	perl -pe 's~#DEBHELPER#~qx{cat debian/wazuh-agent.postrm.debhelper}~eg' < debian/postrm > debian/wazuh-agent/DEBIAN/postrm
+	chown 0:0 debian/wazuh-agent/DEBIAN/postrm
+	chmod 755 debian/wazuh-agent/DEBIAN/postrm
+	install -o 0 -g 0 -m 644 -p debian/conffiles debian/wazuh-agent/DEBIAN/conffiles
+	find debian/wazuh-agent/etc -type f -printf '/etc/%P
+' >> debian/wazuh-agent/DEBIAN/conffiles
+	chmod 644 debian/wazuh-agent/DEBIAN/conffiles
+   dh_gencontrol
+	dpkg-gencontrol -ldebian/changelog -Tdebian/wazuh-agent.substvars -Pdebian/wazuh-agent
+dpkg-gencontrol: warning: Depends field of package wazuh-agent: unknown substitution variable ${shlibs:Depends}
+dpkg-gencontrol: warning: package wazuh-agent: unused substitution variable ${misc:Depends}
+dpkg-gencontrol: warning: package wazuh-agent: unused substitution variable ${python:Depends}
+	chmod 644 debian/wazuh-agent/DEBIAN/control
+	chown 0:0 debian/wazuh-agent/DEBIAN/control
+   dh_md5sums
+	(cd debian/wazuh-agent >/dev/null ; find . -type f ! -path "./etc/systemd/system/wazuh-agent.service" ! -path "./etc/init.d/wazuh-agent"  ! -regex './DEBIAN/.*' -printf '%P\0' | LC_ALL=C sort -z | xargs -r0 md5sum > DEBIAN/md5sums) >/dev/null
+	chmod 644 debian/wazuh-agent/DEBIAN/md5sums
+	chown 0:0 debian/wazuh-agent/DEBIAN/md5sums
+   dh_builddeb
+	dpkg-deb --build debian/wazuh-agent ..
+dpkg-deb: building package `wazuh-agent' in `../wazuh-agent_4.9.0-0_amd64.deb'.
+ dpkg-genchanges -b >../wazuh-agent_4.9.0-0_amd64.changes
+dpkg-genchanges: binary-only upload - not including any source code
+ dpkg-source --after-build wazuh-agent-4.9.0
+dpkg-buildpackage: binary only upload (no source included)
+Now running lintian...
+warning: the authors of lintian do not recommend running it with root privileges!
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/bin/wazuh-syscheckd /build_wazuh/agent/wazuh-agent-4.9.0/src/syscheckd/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/bin/wazuh-syscheckd /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/bin/wazuh-syscheckd /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/bin/wazuh-syscheckd /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libdbsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/sqlite
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libdbsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libdbsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/cJSON
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libfimdb.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libfimdb.so /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libfimdb.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/librsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/openssl
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/librsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/librsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/librsync.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/cJSON
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/openssl
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/flatbuffers/build
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/sqlite
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/rsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/bzip2
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/dbsync/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/procps
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/data_provider/build/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsyscollector.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/cJSON
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/openssl
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/shared_modules/http-request/build
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/pacman/lib/libalpm
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/libdb/build_unix
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/sqlite
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/libarchive/.libs
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/libplist/bin/lib
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/bzip2
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/rpm/builddir
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/procps
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/curl/lib/.libs
+E: wazuh-agent: binary-or-shlib-defines-rpath var/ossec/lib/libsysinfo.so /build_wazuh/agent/wazuh-agent-4.9.0/src/external/cJSON
+W: wazuh-agent: syntax-error-in-debian-changelog line 283 "unrecognised line"
+W: wazuh-agent: syntax-error-in-debian-changelog line 285 "found change data where expected next heading or eof"
+W: wazuh-agent: syntax-error-in-debian-changelog line 313 "unrecognised line"
+W: wazuh-agent: syntax-error-in-debian-changelog line 315 "found change data where expected next heading or eof"
+W: wazuh-agent: syntax-error-in-debian-changelog line 319 "unrecognised line"
+W: wazuh-agent: syntax-error-in-debian-changelog line 321 "found change data where expected next heading or eof"
+W: wazuh-agent: syntax-error-in-debian-changelog line 325 "unrecognised line"
+W: wazuh-agent: syntax-error-in-debian-changelog line 327 "found change data where expected next heading or eof"
+W: wazuh-agent: debian-changelog-line-too-long line 3
+E: wazuh-agent: no-debconf-config
+W: wazuh-agent: malformed-prompt-in-templates wazuh-agent/server-ip
+W: wazuh-agent: too-long-short-description-in-templates wazuh-agent/server-ip
+W: wazuh-agent: postrm-does-not-purge-debconf
+W: wazuh-agent: description-too-long
+E: wazuh-agent: extended-description-is-empty
+E: wazuh-agent: debian-revision-should-not-be-zero 4.9.0-0
+W: wazuh-agent: breaks-without-version ossec-hids
+W: wazuh-agent: breaks-without-version ossec-hids-agent
+W: wazuh-agent: breaks-without-version wazuh-manager
+W: wazuh-agent: script-in-etc-init.d-not-registered-via-update-rc.d etc/init.d/wazuh-agent
+W: wazuh-agent: init.d-script-has-bad-lsb-line etc/init.d/wazuh-agent:18
+E: wazuh-agent: init.d-script-does-not-implement-required-option etc/init.d/wazuh-agent force-reload
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/active-response/bin/kaspersky.py
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/main.exp)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh.exp)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_asa-fwsmconfig_diff)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_foundry_diff)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_generic_diff)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_integrity_check_bsd)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_integrity_check_linux)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_nopass.exp)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/ssh_pixconfig_diff)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/sshlogin.exp)
+E: wazuh-agent: missing-dep-for-interpreter expect => expect (var/ossec/agentless/su.exp)
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/darwin-delete-oldusers.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/darwin-init.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/dist-detect.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/inst-functions.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/pkg_installer.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/template-select.sh
+E: wazuh-agent: missing-dep-for-interpreter ksh => ksh | mksh | pdksh | zsh (var/ossec/packages_files/agent_installation_scripts/src/init/templates/ossec-hids-aix.init)
+W: wazuh-agent: unusual-interpreter var/ossec/packages_files/agent_installation_scripts/src/init/templates/ossec-hids-gentoo.init #!/sbin/runscript
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/templates/ossec-hids-hpux.init
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/update-indexer.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/wazuh-local.sh
+W: wazuh-agent: script-not-executable var/ossec/packages_files/agent_installation_scripts/src/init/wazuh/wazuh.sh
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/aws/aws-s3
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/aws/aws_tools.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/azure-logs
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/azure_services/analytics.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/azure_services/graph.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/azure_services/storage.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/azure_utils.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/db/orm.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/azure/db/utils.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/docker/DockerListener
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/buckets/access_logs.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/buckets/bucket.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/gcloud
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/integration.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/pubsub/subscriber.py
+E: wazuh-agent: python-script-but-no-python-dep var/ossec/wodles/gcloud/tools.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/aws_bucket.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/azure/azure_services/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/localfile-logs/snort-logs.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/utils.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/subscribers/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/config.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/subscribers/sqs_message_processor.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/localfile-logs/ossec-logs.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/localfile-logs/syslog-logs.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/subscribers/s3_log_handler.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/ar-definitions.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/subscribers/sqs_queue.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/services/aws_service.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/wazuh_integration.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/azure/db/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/server_access.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/localfile-logs/apache-logs.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/waf.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/services/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/vpcflow.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/cloudtrail.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/gcloud/exceptions.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/packages_files/agent_installation_scripts/etc/templates/config/generic/localfile-logs/audit-logs.template
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/load_balancers.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/__init__.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/services/inspector.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/services/cloudwatchlogs.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/umbrella.py
+W: wazuh-agent: executable-not-elf-or-script var/ossec/wodles/aws/buckets_s3/guardduty.py
+N: 346 tags overridden (3 errors, 343 warnings)
+Finished running lintian.
+
+WARNING generated by debuild:
+Making debian/rules executable!
+
+Package build_logs.txt added to /home/theovaka/wazuh/packages/output/.
